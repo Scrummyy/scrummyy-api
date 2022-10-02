@@ -107,20 +107,6 @@ func main() {
 
 	log.Printf("\n\n PORT: %s \n ENV: %s \n SSL: %s \n Version: %s \n\n", port, os.Getenv("ENV"), os.Getenv("SSL"), os.Getenv("API_VERSION"))
 
-	if os.Getenv("SSL") == "TRUE" {
-
-		//Generated using sh generate-certificate.sh
-		SSLKeys := &struct {
-			CERT string
-			KEY  string
-		}{
-			CERT: "./cert/myCA.cer",
-			KEY:  "./cert/myCA.key",
-		}
-
-		r.RunTLS(":"+port, SSLKeys.CERT, SSLKeys.KEY)
-	} else {
-		r.Run(":" + port)
-	}
+	r.Run(":" + port)
 
 }
