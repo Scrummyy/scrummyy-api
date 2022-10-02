@@ -1,4 +1,4 @@
-module github.com/Massad/gin-boilerplate
+module github.com/Scrummyy/scrummyy-api
 
 go 1.14
 

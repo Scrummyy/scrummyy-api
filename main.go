@@ -3,13 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"runtime"
 
-	"github.com/Massad/gin-boilerplate/controllers"
-	"github.com/Massad/gin-boilerplate/db"
-	"github.com/Massad/gin-boilerplate/forms"
+	"github.com/Scrummyy/scrummyy-api/api/controllers"
+	db "github.com/Scrummyy/scrummyy-api/configs"
+	datatype "github.com/Scrummyy/scrummyy-api/internal/datatypes"
 	"github.com/gin-contrib/gzip"
 	"github.com/joho/godotenv"
 	uuid "github.com/twinj/uuid"
@@ -18,8 +16,8 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
-//CORSMiddleware ...
-//CORS (Cross-Origin Resource Sharing)
+// CORSMiddleware ...
+// CORS (Cross-Origin Resource Sharing)
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "http://localhost")
@@ -38,8 +36,8 @@ func CORSMiddleware() gin.HandlerFunc {
 	}
 }
 
-//RequestIDMiddleware ...
-//Generate a unique ID and attach it to each request for future reference or use
+// RequestIDMiddleware ...
+// Generate a unique ID and attach it to each request for future reference or use
 func RequestIDMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		uuid := uuid.NewV4()
@@ -50,8 +48,8 @@ func RequestIDMiddleware() gin.HandlerFunc {
 
 var auth = new(controllers.AuthController)
 
-//TokenAuthMiddleware ...
-//JWT Authentication middleware attached to each request that needs to be authenitcated to validate the access_token in the header
+// TokenAuthMiddleware ...
+// JWT Authentication middleware attached to each request that needs to be authenitcated to validate the access_token in the header
 func TokenAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth.TokenValid(c)
@@ -74,7 +72,7 @@ func main() {
 	r := gin.Default()
 
 	//Custom form validator
-	binding.Validator = new(forms.DefaultValidator)
+	binding.Validator = new(datatype.DefaultValidator)
 
 	r.Use(CORSMiddleware())
 	r.Use(RequestIDMiddleware())
@@ -103,30 +101,7 @@ func main() {
 		//Refresh the token when needed to generate new access_token and refresh_token for the user
 		v1.POST("/token/refresh", auth.Refresh)
 
-		/*** START Article ***/
-		article := new(controllers.ArticleController)
-
-		v1.POST("/article", TokenAuthMiddleware(), article.Create)
-		v1.GET("/articles", TokenAuthMiddleware(), article.All)
-		v1.GET("/article/:id", TokenAuthMiddleware(), article.One)
-		v1.PUT("/article/:id", TokenAuthMiddleware(), article.Update)
-		v1.DELETE("/article/:id", TokenAuthMiddleware(), article.Delete)
 	}
-
-	r.LoadHTMLGlob("./public/html/*")
-
-	r.Static("/public", "./public")
-
-	r.GET("/", func(c *gin.Context) {
-		c.HTML(http.StatusOK, "index.html", gin.H{
-			"ginBoilerplateVersion": "v0.03",
-			"goVersion":             runtime.Version(),
-		})
-	})
-
-	r.NoRoute(func(c *gin.Context) {
-		c.HTML(404, "404.html", gin.H{})
-	})
 
 	port := os.Getenv("PORT")
 

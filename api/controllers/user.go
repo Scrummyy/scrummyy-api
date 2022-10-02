@@ -1,29 +1,29 @@
 package controllers
 
 import (
-	"github.com/Massad/gin-boilerplate/forms"
-	"github.com/Massad/gin-boilerplate/models"
+	"github.com/Scrummyy/scrummyy-api/api/data/models"
+	datatype "github.com/Scrummyy/scrummyy-api/internal/datatypes"
 
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-//UserController ...
+// UserController ...
 type UserController struct{}
 
 var userModel = new(models.UserModel)
-var userForm = new(forms.UserForm)
+var userForm = new(datatype.UserForm)
 
-//getUserID ...
+// getUserID ...
 func getUserID(c *gin.Context) (userID int64) {
 	//MustGet returns the value for the given key if it exists, otherwise it panics.
 	return c.MustGet("userID").(int64)
 }
 
-//Login ...
+// Login ...
 func (ctrl UserController) Login(c *gin.Context) {
-	var loginForm forms.LoginForm
+	var loginForm datatype.LoginForm
 
 	if validationErr := c.ShouldBindJSON(&loginForm); validationErr != nil {
 		message := userForm.Login(validationErr)
@@ -40,9 +40,9 @@ func (ctrl UserController) Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully logged in", "user": user, "token": token})
 }
 
-//Register ...
+// Register ...
 func (ctrl UserController) Register(c *gin.Context) {
-	var registerForm forms.RegisterForm
+	var registerForm datatype.RegisterForm
 
 	if validationErr := c.ShouldBindJSON(&registerForm); validationErr != nil {
 		message := userForm.Register(validationErr)
@@ -59,7 +59,7 @@ func (ctrl UserController) Register(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully registered", "user": user})
 }
 
-//Logout ...
+// Logout ...
 func (ctrl UserController) Logout(c *gin.Context) {
 
 	au, err := authModel.ExtractTokenMetadata(c.Request)

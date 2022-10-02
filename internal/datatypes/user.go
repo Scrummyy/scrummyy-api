@@ -1,4 +1,4 @@
-package forms
+package datatypes
 
 import (
 	"encoding/json"
@@ -6,23 +6,23 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
-//UserForm ...
+// UserForm ...
 type UserForm struct{}
 
-//LoginForm ...
+// LoginForm ...
 type LoginForm struct {
 	Email    string `form:"email" json:"email" binding:"required,email"`
 	Password string `form:"password" json:"password" binding:"required,min=3,max=50"`
 }
 
-//RegisterForm ...
+// RegisterForm ...
 type RegisterForm struct {
 	Name     string `form:"name" json:"name" binding:"required,min=3,max=20,fullName"` //fullName rule is in validator.go
 	Email    string `form:"email" json:"email" binding:"required,email"`
 	Password string `form:"password" json:"password" binding:"required,min=3,max=50"`
 }
 
-//Name ...
+// Name ...
 func (f UserForm) Name(tag string, errMsg ...string) (message string) {
 	switch tag {
 	case "required":
@@ -39,7 +39,7 @@ func (f UserForm) Name(tag string, errMsg ...string) (message string) {
 	}
 }
 
-//Email ...
+// Email ...
 func (f UserForm) Email(tag string, errMsg ...string) (message string) {
 	switch tag {
 	case "required":
@@ -54,7 +54,7 @@ func (f UserForm) Email(tag string, errMsg ...string) (message string) {
 	}
 }
 
-//Password ...
+// Password ...
 func (f UserForm) Password(tag string) (message string) {
 	switch tag {
 	case "required":
@@ -68,7 +68,7 @@ func (f UserForm) Password(tag string) (message string) {
 	}
 }
 
-//Signin ...
+// Signin ...
 func (f UserForm) Login(err error) string {
 	switch err.(type) {
 	case validator.ValidationErrors:
@@ -93,7 +93,7 @@ func (f UserForm) Login(err error) string {
 	return "Something went wrong, please try again later"
 }
 
-//Register ...
+// Register ...
 func (f UserForm) Register(err error) string {
 	switch err.(type) {
 	case validator.ValidationErrors:

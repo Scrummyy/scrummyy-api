@@ -6,23 +6,23 @@ import (
 	"errors"
 )
 
-//UserSessionInfo ...
+// UserSessionInfo ...
 type UserSessionInfo struct {
 	ID    int64  `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }
 
-//JSONRaw ...
+// JSONRaw ...
 type JSONRaw json.RawMessage
 
-//Value ...
+// Value ...
 func (j JSONRaw) Value() (driver.Value, error) {
 	byteArr := []byte(j)
 	return driver.Value(byteArr), nil
 }
 
-//Scan ...
+// Scan ...
 func (j *JSONRaw) Scan(src interface{}) error {
 	asBytes, ok := src.([]byte)
 	if !ok {
@@ -35,12 +35,12 @@ func (j *JSONRaw) Scan(src interface{}) error {
 	return nil
 }
 
-//MarshalJSON ...
+// MarshalJSON ...
 func (j *JSONRaw) MarshalJSON() ([]byte, error) {
 	return *j, nil
 }
 
-//UnmarshalJSON ...
+// UnmarshalJSON ...
 func (j *JSONRaw) UnmarshalJSON(data []byte) error {
 	if j == nil {
 		return errors.New("json.RawMessage: UnmarshalJSON on nil pointer")
@@ -49,7 +49,7 @@ func (j *JSONRaw) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-//DataList ....
+// DataList ....
 type DataList struct {
 	Data JSONRaw `db:"data" json:"data"`
 	Meta JSONRaw `db:"meta" json:"meta"`
