@@ -4,11 +4,9 @@ package server
 // codebase more loosely coupled.
 import (
 	"acquia/decision-service/internal/constants"
-	"acquia/decision-service/pkg/cache"
 	"acquia/decision-service/pkg/database"
 	"acquia/decision-service/pkg/logger"
 	"acquia/decision-service/pkg/rest"
-	"errors"
 	"net"
 	"net/http"
 	"os"
@@ -112,31 +110,31 @@ func InitHttpClient(config *viper.Viper) rest.HttpClientInterface {
 }
 
 // InitCaching initializes and instance of redis.
-func InitCaching(config *viper.Viper) (cache.Storer, error) {
-	switch config.GetString(constants.CacheType) {
-	case "redis":
-		opt := cache.RedisOptions{
-			Address:     config.GetString(constants.CacheRedisHost),
-			Username:    config.GetString(constants.CacheRedisUsername),
-			Password:    config.GetString(constants.CacheRedisPassword),
-			DB:          config.GetInt(constants.CacheRedisDB),
-			MaxRetries:  config.GetInt(constants.CacheRedisMaxRetries),
-			Namespace:   config.GetString(constants.CacheRedisNamespace),
-			DialTimeout: time.Duration(config.GetInt(constants.CacheRedisDialTimeout)) * time.Second,
-			ReadTimeout: time.Duration(config.GetInt(constants.CacheRedisReadTimeout)) * time.Second,
-			DefaultTTL:  time.Duration(config.GetInt(constants.CacheDefaultTTL)) * time.Minute,
-		}
-		return cache.NewRedisCache(opt)
-	case "mysql":
-		opt := cache.MySQLOptions{
-			Uri:        config.GetString(constants.CacheMySQLUri),
-			DefaultTTL: time.Duration(config.GetInt(constants.CacheDefaultTTL)) * time.Minute,
-		}
-		return cache.NewMySQLCache(opt)
-	case "stub":
-		return &cache.Stub{}, nil
+// func InitCaching(config *viper.Viper) (cache.Storer, error) {
+// 	switch config.GetString(constants.CacheType) {
+// 	case "redis":
+// 		opt := cache.RedisOptions{
+// 			Address:     config.GetString(constants.CacheRedisHost),
+// 			Username:    config.GetString(constants.CacheRedisUsername),
+// 			Password:    config.GetString(constants.CacheRedisPassword),
+// 			DB:          config.GetInt(constants.CacheRedisDB),
+// 			MaxRetries:  config.GetInt(constants.CacheRedisMaxRetries),
+// 			Namespace:   config.GetString(constants.CacheRedisNamespace),
+// 			DialTimeout: time.Duration(config.GetInt(constants.CacheRedisDialTimeout)) * time.Second,
+// 			ReadTimeout: time.Duration(config.GetInt(constants.CacheRedisReadTimeout)) * time.Second,
+// 			DefaultTTL:  time.Duration(config.GetInt(constants.CacheDefaultTTL)) * time.Minute,
+// 		}
+// 		return cache.NewRedisCache(opt)
+// 	case "mysql":
+// 		opt := cache.MySQLOptions{
+// 			Uri:        config.GetString(constants.CacheMySQLUri),
+// 			DefaultTTL: time.Duration(config.GetInt(constants.CacheDefaultTTL)) * time.Minute,
+// 		}
+// 		return cache.NewMySQLCache(opt)
+// 	case "stub":
+// 		return &cache.Stub{}, nil
 
-	}
+// 	}
 
-	return nil, errors.New(constants.ErrorInvalidCacheType)
-}
+// 	return nil, errors.New(constants.ErrorInvalidCacheType)
+// }

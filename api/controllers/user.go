@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/Scrummyy/scrummyy-api/api/data/models"
+	"github.com/Scrummyy/scrummyy-api/data/models"
 	datatype "github.com/Scrummyy/scrummyy-api/internal/datatypes"
 
 	"net/http"

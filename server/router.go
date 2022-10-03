@@ -87,14 +87,14 @@ func RegisterDependencyMiddleware(router *gin.Engine, conf *viper.Viper) {
 
 	hc := InitHttpClient(conf)
 
-	ch, err := InitCaching(conf)
-	if err != nil {
-		logrus.WithError(err).Warning("failed to connect to redis server")
-	}
+	// ch, err := InitCaching(conf)
+	// if err != nil {
+	// 	logrus.WithError(err).Warning("failed to connect to redis server")
+	// }
 
 	dependencyMap[constants.KeyDecisionDBInstance] = decisionDB
 	dependencyMap[constants.KeyHttpClientInstance] = hc
-	dependencyMap[constants.KeyCacheInstance] = ch
+	// dependencyMap[constants.KeyCacheInstance] = ch
 
 	router.Use(middleware.InjectDependency(&dependencyMap))
 }

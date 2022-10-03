@@ -1,0 +1,30 @@
+app:
+  host: localhost
+  port: 8090
+  environment: testing
+timeouts:
+  api_read_timeout: 60
+  api_write_timeout: 60
+database:
+  decision:
+    uri: root:password@tcp(localhost:3307)/decision-db?parseTime=true
+cors:
+  enabled: true
+  allowed_headers:
+    - X-Authorization-Timestamp
+    - Accept
+    - Authorization
+    - Content-Type
+    - X-Authorization-Content-SHA256
+    - X-Request-ID
+  allowed_methods:
+    - GET
+    - POST
+    - PUT
+    - PATCH
+    - DELETE
+  allow_all_origins: true
+debug:
+  level: trace
+  sql_queries: false
+  

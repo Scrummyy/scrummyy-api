@@ -6,7 +6,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/Scrummyy/scrummyy-api/api/data/models"
+	"github.com/Scrummyy/scrummyy-api/data/models"
 	datatype "github.com/Scrummyy/scrummyy-api/internal/datatypes"
 	"github.com/gin-gonic/gin"
 	jwt "github.com/golang-jwt/jwt/v4"
