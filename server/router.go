@@ -3,8 +3,10 @@ package server
 import (
 	"io"
 
-	"acquia/decision-service/internal/constants"
-	"acquia/decision-service/pkg/middleware"
+	db "github.com/Scrummyy/scrummyy-api/configs"
+	"github.com/Scrummyy/scrummyy-api/internal/constants"
+
+	"github.com/Scrummyy/scrummyy-api/internal/middleware"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -59,12 +61,12 @@ func GetRouter(conf *viper.Viper) *gin.Engine {
 	})
 
 	// Add authentication middleware.
-	if conf.GetBool(constants.AuthenticationEnabled) {
-		router.Use(middleware.Authentication(conf))
-	}
+	// if conf.GetBool(constants.AuthenticationEnabled) {
+	// 	router.Use(middleware.Authentication(conf))
+	// }
 
-	// Add authorization middleware.
-	router.Use(middleware.Authorization(conf))
+	// // Add authorization middleware.
+	// router.Use(middleware.Authorization(conf))
 
 	// Add further middlewares like monitoring, etc
 
@@ -80,20 +82,17 @@ func RegisterDependencyMiddleware(router *gin.Engine, conf *viper.Viper) {
 
 	dependencyMap = make(map[string]interface{})
 
-	decisionDB, err := InitDatabase(conf, constants.DecisionDatabase)
-	if err != nil {
-		panic(err)
-	}
+	db.Init(conf)
 
-	hc := InitHttpClient(conf)
+	// hc := InitHttpClient(conf)
 
 	// ch, err := InitCaching(conf)
 	// if err != nil {
 	// 	logrus.WithError(err).Warning("failed to connect to redis server")
 	// }
 
-	dependencyMap[constants.KeyDecisionDBInstance] = decisionDB
-	dependencyMap[constants.KeyHttpClientInstance] = hc
+	// dependencyMap[constants.KeyDecisionDBInstance] = decisionDB
+	// dependencyMap[constants.KeyHttpClientInstance] = hc
 	// dependencyMap[constants.KeyCacheInstance] = ch
 
 	router.Use(middleware.InjectDependency(&dependencyMap))

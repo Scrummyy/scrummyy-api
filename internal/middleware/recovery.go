@@ -1,11 +1,12 @@
 package middleware
 
 import (
-	"acquia/decision-service/internal/logger_messages"
-	"acquia/decision-service/internal/output"
-	apperror "acquia/decision-service/pkg/app_error"
 	"errors"
 	"net/http"
+
+	apperror "github.com/Scrummyy/scrummyy-api/internal/app_error"
+	"github.com/Scrummyy/scrummyy-api/internal/logger_messages"
+	"github.com/Scrummyy/scrummyy-api/internal/output"
 
 	"github.com/gin-gonic/gin"
 )

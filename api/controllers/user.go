@@ -7,13 +7,25 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
+
+type UserAPI struct {
+	config *viper.Viper
+}
 
 // UserController ...
 type UserController struct{}
 
 var userModel = new(models.UserModel)
 var userForm = new(datatype.UserForm)
+
+func RegisterUserHandler(r gin.IRouter, conf *viper.Viper) {
+	api := UserAPI{config: conf}
+	r.POST("/users/login", api.Login)
+	r.POST("/users/register", api.Register)
+	r.GET("/users/logout", api.Logout)
+}
 
 // getUserID ...
 func getUserID(c *gin.Context) (userID int64) {
@@ -22,7 +34,7 @@ func getUserID(c *gin.Context) (userID int64) {
 }
 
 // Login ...
-func (ctrl UserController) Login(c *gin.Context) {
+func (ctrl UserAPI) Login(c *gin.Context) {
 	var loginForm datatype.LoginForm
 
 	if validationErr := c.ShouldBindJSON(&loginForm); validationErr != nil {
@@ -41,7 +53,7 @@ func (ctrl UserController) Login(c *gin.Context) {
 }
 
 // Register ...
-func (ctrl UserController) Register(c *gin.Context) {
+func (ctrl UserAPI) Register(c *gin.Context) {
 	var registerForm datatype.RegisterForm
 
 	if validationErr := c.ShouldBindJSON(&registerForm); validationErr != nil {
@@ -60,7 +72,7 @@ func (ctrl UserController) Register(c *gin.Context) {
 }
 
 // Logout ...
-func (ctrl UserController) Logout(c *gin.Context) {
+func (ctrl UserAPI) Logout(c *gin.Context) {
 
 	au, err := authModel.ExtractTokenMetadata(c.Request)
 	if err != nil {

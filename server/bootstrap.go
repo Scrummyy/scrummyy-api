@@ -3,14 +3,12 @@ package server
 // A centralized place where all dependencies should be declared as independent function to make
 // codebase more loosely coupled.
 import (
-	"acquia/decision-service/internal/constants"
-	"acquia/decision-service/pkg/database"
-	"acquia/decision-service/pkg/logger"
-	"acquia/decision-service/pkg/rest"
-	"net"
-	"net/http"
+	// "acquia/decision-service/pkg/database"
+	// "acquia/decision-service/pkg/rest"
+
 	"os"
-	"time"
+
+	"github.com/Scrummyy/scrummyy-api/internal/constants"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -64,50 +62,50 @@ func InitConfig() (*viper.Viper, error) {
 }
 
 // InitDatabase initializes database connection and its dependencies.
-func InitDatabase(config *viper.Viper, name string) (database.Database, error) {
-	var db database.Database
-	var err error
-	switch name {
-	case constants.DecisionDatabase:
-		db, err = database.NewMysqlDB(config.GetString(constants.DatabaseDecisionUri), database.DatabaseOptions{})
-		if err != nil {
-			return nil, err
-		}
-	}
+// func InitDatabase(config *viper.Viper, name string) (database.Database, error) {
+// 	var db database.Database
+// 	var err error
+// 	switch name {
+// 	case constants.DecisionDatabase:
+// 		db, err = database.NewMysqlDB(config.GetString(constants.DatabaseDecisionUri), database.DatabaseOptions{})
+// 		if err != nil {
+// 			return nil, err
+// 		}
+// 	}
 
-	// add a sql logger hook based on the config value
-	db.AddHook(func(args ...interface{}) {
-		if config.GetBool(constants.DebugSQLQueries) {
-			q := args[0] // the first values is the query
-			p := args[1] // the second value is the arguments passed to the DB function
-			logrus.WithField("Arguments", p).WithField("Query", q).Debug("SQL Logger")
-		}
-	})
+// 	// add a sql logger hook based on the config value
+// 	db.AddHook(func(args ...interface{}) {
+// 		if config.GetBool(constants.DebugSQLQueries) {
+// 			q := args[0] // the first values is the query
+// 			p := args[1] // the second value is the arguments passed to the DB function
+// 			logrus.WithField("Arguments", p).WithField("Query", q).Debug("SQL Logger")
+// 		}
+// 	})
 
-	return db, nil
-}
+// 	return db, nil
+// }
 
 // InitHttpClient creates an http client using golang client.
-func InitHttpClient(config *viper.Viper) rest.HttpClientInterface {
-	return &http.Client{
-		Transport: &logger.LoggerTransport{
-			Transport: http.Transport{
-				Proxy: http.ProxyFromEnvironment,
-				DialContext: (&net.Dialer{
-					Timeout:   time.Duration(config.GetInt64(constants.HttpClientTimeout)) * time.Second,
-					KeepAlive: time.Duration(config.GetInt64(constants.HttpClientTimeout)) * time.Second,
-				}).DialContext,
-				MaxIdleConns:          config.GetInt(constants.HttpClientMaxIdleConnections),
-				IdleConnTimeout:       60 * time.Second,
-				TLSHandshakeTimeout:   10 * time.Second,
-				ExpectContinueTimeout: 1 * time.Second,
-				ForceAttemptHTTP2:     true,
-				MaxIdleConnsPerHost:   config.GetInt(constants.HttpClientMaxIdleConnsPerHost),
-			},
-		},
-		Timeout: time.Duration(config.GetInt64(constants.HttpClientTimeout)) * time.Second,
-	}
-}
+// func InitHttpClient(config *viper.Viper) rest.HttpClientInterface {
+// 	return &http.Client{
+// 		Transport: &logger.LoggerTransport{
+// 			Transport: http.Transport{
+// 				Proxy: http.ProxyFromEnvironment,
+// 				DialContext: (&net.Dialer{
+// 					Timeout:   time.Duration(config.GetInt64(constants.HttpClientTimeout)) * time.Second,
+// 					KeepAlive: time.Duration(config.GetInt64(constants.HttpClientTimeout)) * time.Second,
+// 				}).DialContext,
+// 				MaxIdleConns:          config.GetInt(constants.HttpClientMaxIdleConnections),
+// 				IdleConnTimeout:       60 * time.Second,
+// 				TLSHandshakeTimeout:   10 * time.Second,
+// 				ExpectContinueTimeout: 1 * time.Second,
+// 				ForceAttemptHTTP2:     true,
+// 				MaxIdleConnsPerHost:   config.GetInt(constants.HttpClientMaxIdleConnsPerHost),
+// 			},
+// 		},
+// 		Timeout: time.Duration(config.GetInt64(constants.HttpClientTimeout)) * time.Second,
+// 	}
+// }
 
 // InitCaching initializes and instance of redis.
 // func InitCaching(config *viper.Viper) (cache.Storer, error) {

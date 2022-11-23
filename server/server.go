@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"time"
 
-	"acquia/decision-service/internal/constants"
+	"github.com/Scrummyy/scrummyy-api/internal/constants"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
@@ -33,6 +33,10 @@ func Serve(r *gin.Engine, conf *viper.Viper) {
 			logrus.Fatalf("HTTP Server failure: %s", err)
 		}
 	}()
+
+	// r.Use(middleware.CORSMiddleware())
+	// r.Use(middleware.RequestIDMiddleware())
+	// r.Use(gzip.Gzip(gzip.DefaultCompression))
 
 	// graceful shutdown code
 	quit := make(chan os.Signal)

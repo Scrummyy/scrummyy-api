@@ -6,9 +6,11 @@ import (
 	"log"
 	"os"
 
+	"github.com/Scrummyy/scrummyy-api/internal/constants"
 	"github.com/go-gorp/gorp"
 	_redis "github.com/go-redis/redis/v7"
 	_ "github.com/lib/pq" //import postgres
+	"github.com/spf13/viper"
 )
 
 // DB ...
@@ -19,9 +21,15 @@ type DB struct {
 var db *gorp.DbMap
 
 // Init ...
-func Init() {
+func Init(config *viper.Viper) {
 
-	dbinfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_USER"), os.Getenv("DB_PASS"), os.Getenv("DB_NAME"))
+	dbinfo := fmt.Sprintf(
+		"postgres://%s:%s@localhost:%s/%s?sslmode=disable",
+		config.GetString(constants.DatabaseUsername),
+		config.GetString(constants.DatabasePassword),
+		config.GetString(constants.DatabasePort),
+		config.GetString(constants.DatabaseName),
+	)
 
 	var err error
 	db, err = ConnectDB(dbinfo)
@@ -43,7 +51,7 @@ func ConnectDB(dataSourceName string) (*gorp.DbMap, error) {
 	}
 
 	dbmap := &gorp.DbMap{Db: db, Dialect: gorp.PostgresDialect{}}
-	//dbmap.TraceOn("[gorp]", log.New(os.Stdout, "golang-gin:", log.Lmicroseconds)) //Trace database requests
+	dbmap.TraceOn("[gorp]", log.New(os.Stdout, "golang-gin:", log.Lmicroseconds)) //Trace database requests
 	return dbmap, nil
 }
 

@@ -1,5 +1,19 @@
 package middleware
 
+import (
+	"github.com/Scrummyy/scrummyy-api/api/controllers"
+	"github.com/gin-gonic/gin"
+)
+
+var auth = new(controllers.AuthController)
+
+func TokenAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		auth.TokenValid(c)
+		c.Next()
+	}
+}
+
 // import (
 // 	"github.com/Scrummyy/scrummyy-api/internal/constants"
 // 	"acquia/decision-service/internal/logger_messages"

@@ -1,13 +1,15 @@
 app:
   host: localhost
-  port: 8090
-  environment: testing
+  port: 8080
+  environment: development
 timeouts:
   api_read_timeout: 60
   api_write_timeout: 60
 database:
-  decision:
-    uri: root:password@tcp(localhost:3307)/decision-db?parseTime=true
+    username: postgres
+    password: postgres
+    name: scrummy-2
+    port: 5432
 cors:
   enabled: true
   allowed_headers:
@@ -27,4 +29,4 @@ cors:
 debug:
   level: trace
   sql_queries: false
-  
+

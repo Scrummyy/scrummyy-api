@@ -11,12 +11,15 @@ import (
 
 // User ...
 type User struct {
-	ID        int64  `db:"id, primarykey, autoincrement" json:"id"`
-	Email     string `db:"email" json:"email"`
-	Password  string `db:"password" json:"-"`
-	Name      string `db:"name" json:"name"`
-	UpdatedAt int64  `db:"updated_at" json:"-"`
-	CreatedAt int64  `db:"created_at" json:"-"`
+	ID       string `db:"id, primarykey, autoincrement" json:"id"`
+	Email    string `db:"email" json:"email"`
+	Username string `db:"username" json:"username"`
+	Password string `db:"password" json:"-"`
+	Name     string `db:"name" json:"name"`
+	// Projects  []sql.NullString `db:"projects" json:"projects"`
+	// Workspace string           `db:"workspace" json:"workspace"`
+	UpdatedAt string `db:"updated_at" json:"-"`
+	CreatedAt string `db:"created_at" json:"-"`
 }
 
 // UserModel ...
@@ -27,7 +30,7 @@ var authModel = new(AuthModel)
 // Login ...
 func (m UserModel) Login(form datatype.LoginForm) (user User, token Token, err error) {
 
-	err = db.GetDB().SelectOne(&user, "SELECT id, email, password, name, updated_at, created_at FROM public.user WHERE email=LOWER($1) LIMIT 1", form.Email)
+	err = db.GetDB().SelectOne(&user, "SELECT id, name, email, username, created_at FROM auth.users WHERE email=LOWER($1) LIMIT 1", form.Email)
 
 	if err != nil {
 		return user, token, err
@@ -63,7 +66,7 @@ func (m UserModel) Register(form datatype.RegisterForm) (user User, err error) {
 	getDb := db.GetDB()
 
 	//Check if the user exists in database
-	checkUser, err := getDb.SelectInt("SELECT count(id) FROM public.user WHERE email=LOWER($1) LIMIT 1", form.Email)
+	checkUser, err := getDb.SelectInt("SELECT count(id) FROM auth.users WHERE email=LOWER($1) LIMIT 1", form.Email)
 	if err != nil {
 		return user, errors.New("something went wrong, please try again later")
 	}
@@ -79,7 +82,7 @@ func (m UserModel) Register(form datatype.RegisterForm) (user User, err error) {
 	}
 
 	//Create the user and return back the user ID
-	err = getDb.QueryRow("INSERT INTO public.user(email, password, name) VALUES($1, $2, $3) RETURNING id", form.Email, string(hashedPassword), form.Name).Scan(&user.ID)
+	err = getDb.QueryRow("INSERT INTO auth.users(email, password, name, username) VALUES($1, $2, $3, $4) RETURNING id", form.Email, string(hashedPassword), form.Name, form.Username).Scan(&user.ID)
 	if err != nil {
 		return user, errors.New("something went wrong, please try again later")
 	}
@@ -92,6 +95,6 @@ func (m UserModel) Register(form datatype.RegisterForm) (user User, err error) {
 
 // One ...
 func (m UserModel) One(userID int64) (user User, err error) {
-	err = db.GetDB().SelectOne(&user, "SELECT id, email, name FROM public.user WHERE id=$1 LIMIT 1", userID)
+	err = db.GetDB().SelectOne(&user, "SELECT id, email, name FROM auth.users WHERE id=$1 LIMIT 1", userID)
 	return user, err
 }

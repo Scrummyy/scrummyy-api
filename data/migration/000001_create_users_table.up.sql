@@ -1,5 +1,7 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
+CREATE SCHEMA IF NOT EXISTS auth;
+
 create table if not EXISTS auth.users(
     id uuid DEFAULT uuid_generate_v4() not null primary key,
     name varchar(50) not null,
@@ -8,5 +10,6 @@ create table if not EXISTS auth.users(
     password text not null,
     projects uuid[],
     workspace uuid,
-    is_superadmin bool DEFAULT false not null
+    created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp DEFAULT CURRENT_TIMESTAMP
 );

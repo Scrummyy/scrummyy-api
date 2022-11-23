@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/Scrummyy/scrummyy-api/internal/constants"
+	"github.com/twinj/uuid"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,4 +43,12 @@ func generateRequestID() string {
 	m.Write([]byte(fmt.Sprint(t)))
 	// make a copy of the original request context
 	return hex.EncodeToString(m.Sum(nil))
+}
+
+func RequestIDMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		uuid := uuid.NewV4()
+		c.Writer.Header().Set("X-Request-Id", uuid.String())
+		c.Next()
+	}
 }
